@@ -1,5 +1,6 @@
-{% extends "base_auth.html" %} {% block content%}
-
+{% extends "base_auth.html" %} {% load static %}
+{% block content%}
+<script defer src="{% static 'js/registration.js' %}"></script>
 <div class="row">
   <div class="col-md-4"></div>
   <div class="col-md-4">
@@ -15,9 +16,15 @@
               name="username"
               id="usernameField"
               placeholder="Username"
+              value="{{fieldValues.username}}"
               class="form-control form-control-sm"
             />
           </div>
+          <div
+            class="invalid_feedback invalid-feedback"
+            style="display: none"
+          ></div>
+          <p class="text-sm text-success usernameSuccessOutput"></p>
           <div class="mb-3">
             <input
               type="email"
@@ -38,7 +45,11 @@
             <small class="float-end m-2">SHOW</small>
           </div>
           <div class="mb-3">
-            <input type="submit" value="Register" class="btn btn-outline-primary form-control">
+            <input
+              type="submit"
+              value="Register"
+              class="btn btn-outline-primary form-control submit-btn"
+            />
           </div>
         </form>
       </div>
