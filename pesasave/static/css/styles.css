@@ -13,7 +13,9 @@
     display: block;
   }
 }
-
+.sidebar{
+  height: 100vh;
+}
 .sidebar .nav-link {
   font-size: 0.875rem;
   font-weight: 500;
