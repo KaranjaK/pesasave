@@ -10,13 +10,14 @@
       </div>
       <div class="card-body">
         <form action="" method="post">
+          {% csrf_token %}
+          {% include 'partials/_messages.html' %}
           <div class="mb-3">
             <input
               type="text"
               name="username"
               id="usernameField"
               placeholder="Username"
-              value="{{fieldValues.username}}"
               class="form-control form-control-sm"
             />
           </div>

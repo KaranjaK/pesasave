@@ -7,6 +7,17 @@ const submitBtn = document.querySelector(".submit-btn");
 const passwordField = document.querySelector("#passwordField");
 const showPasswordToggle = document.querySelector(".showPasswordToggle");
 
+
+// Function to disable the submit button
+function disableSubmitButton() {
+  submitBtn.disabled = true;
+}
+
+// Function to enable the submit button
+function enableSubmitButton() {
+  submitBtn.removeAttribute("disabled");
+}
+
 // Username validation
 usernameField.addEventListener("keyup", (e) => {
   const usernameVal = e.target.value;
@@ -33,11 +44,13 @@ usernameField.addEventListener("keyup", (e) => {
           usernameField.classList.add("is-invalid");
           feedBackArea.style.display = "block";
           feedBackArea.innerHTML = `<p>${data.username_error}</p>`;
-          submitBtn.disabled = true;
-        } else {
-          submitBtn.removeAttribute("disabled");
+          disableSubmitButton();
+        } else if (!emailField.classList.contains("is-invalid")) {
+          enableSubmitButton(); // Enable the button if no error in email field
         }
       });
+  } else {
+    disableSubmitButton()
   }
 });
 
@@ -57,14 +70,16 @@ emailField.addEventListener("keyup", (e) => {
       .then((data) => {
         console.log("data", data);
         if (data.email_error) {
-          submitBtn.disabled = true;
           emailField.classList.add("is-invalid");
           emailFeedBackArea.style.display = "block";
           emailFeedBackArea.innerHTML = `<p>${data.email_error}</p>`;
-        } else {
-          submitBtn.removeAttribute("disabled");
+          disableSubmitButton();
+        } else if (!usernameField.classList.contains("is-invalid")) {
+          enableSubmitButton(); // Enable the button if no error in username field
         }
       });
+  } else {
+    disableSubmitButton();
   }
 });
 
