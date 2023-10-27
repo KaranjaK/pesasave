@@ -95,19 +95,22 @@
         >PesaSave</a
       >
       <ul class="navbar-nav flex-row">
-        <li class="nav-item text-nowrap">
-          <a class="nav-link d-flex align-items-center gap-2" href="#">
+        <li class="nav-item text-nowrap ms-3">
+          <a class="nav-link d-flex align-items-center gap-1" href="#">
             <i class="bi bi-gear-wide-connected"></i>
             Settings
           </a>
         </li>
-        <li class="nav-item text-nowrap">
-          <a class="nav-link d-flex align-items-center gap-2" href="#">
-            <i class="bi bi-door-closed"></i>
-            Sign out
-          </a>
+        <li class="nav-item text-nowrap ms-3">
+          <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button class="nav-link d-flex align-items-center gap-1" href="#">
+              <i class="bi bi-door-closed"></i>
+              Sign out
+            </button>
+          </form>
         </li>
-        <li class="nav-item text-nowrap">
+        <li class="nav-item text-nowrap ms-3">
           <button
             class="nav-link px-3 text-white"
             type="button"
@@ -173,7 +176,7 @@
           </div>
 
           {% block content %} 
-          
+          {% include 'partials/_messages.html' %}
           {% endblock %}
         </main>
       </div>

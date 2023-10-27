@@ -130,12 +130,18 @@ class LoginView(View):
                     return redirect('Home')
                 messages.error(
                     request, 'Account is not active,please check your email')
-                return render(request, 'authentication/login.html')
+                return render(request, 'authorization/login.html')
             messages.error(
                 request, 'Invalid credentials,try again')
-            return render(request, 'authentication/login.html')
+            return render(request, 'authorization/login.html')
 
         messages.error(
             request, 'Please fill all fields')
-        return render(request, 'authentication/login.html')
+        return render(request, 'authorization/login.html')
     
+# Logout View
+class LogoutView(View):
+    def post(self, request):
+        auth.logout(request)
+        messages.success(request, 'You have been logged out')
+        return redirect('login') 
