@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from validate_email import validate_email
 from django.contrib import messages
 from django.core.mail import EmailMessage
-from django.utils.encoding import force_bytes, DjangoUnicodeDecodeError #Help us create formats that can easily be transferable over a network
+from django.utils.encoding import force_bytes, force_str, DjangoUnicodeDecodeError #Help us create formats that can easily be transferable over a network
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode # Used to encode and decode the user id
 from django.contrib.sites.shortcuts import get_current_site #Helps in constructing a domain i.e. a path to our web server
 from .utils import account_activation_token # Imports the Token Generator created in the utils.py file
@@ -90,6 +90,23 @@ class RegistrationView(View):
 # Account Verification View
 class VerificationView(View):
     def get(self, request, uidb64, token):
+        try:
+            id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=id)
+
+            if not account_activation_token.check_token(user, token):
+                return redirect('login'+'?message='+'The user account is already activated!!')
+
+            if user.is_active:
+                return redirect('login')
+            user.is_active = True
+            user.save()
+            messages.success(request, 'You have activated your account successfully.')
+            return redirect('login')
+
+        except Exception as ex:
+            pass
+
         return redirect('login')
 
 # User Login View
