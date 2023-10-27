@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 import json
 from django.http import JsonResponse
@@ -6,6 +6,11 @@ from django.contrib.auth.models import User
 from validate_email import validate_email
 from django.contrib import messages
 from django.core.mail import EmailMessage
+from django.utils.encoding import force_bytes, DjangoUnicodeDecodeError #Help us create formats that can easily be transferable over a network
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode # Used to encode and decode the user id
+from django.contrib.sites.shortcuts import get_current_site #Helps in constructing a domain i.e. a path to our web server
+from .utils import account_activation_token # Imports the Token Generator created in the utils.py file
+from django.urls import reverse # Will help in reverting the user to the system when they click on the activation link
 
 # Create your views here.
 class UsernameValidationView(View):
@@ -55,17 +60,34 @@ class RegistrationView(View):
                 user.set_password(password)
                 user.is_active = False
                 user.save()
+                current_site = get_current_site(request)
+                email_body = {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': account_activation_token.make_token(user),
+                }
+
+                link = reverse('activate', kwargs={
+                               'uidb64': email_body['uid'], 'token': email_body['token']})
+
                 email_subject = 'Account Activation'
-                email_body = f'Hi {username} and welcome to PesaSave.\n Kindly confirm your email to activate your account.\n Thanks'
+
+                activate_url = 'http://'+current_site.domain+link
+
                 email = EmailMessage(
                     email_subject,
-                    email_body,
-                    "letscodeit75@gmail.com",
+                    'Hi '+user.username + '. Welcome to PesaSave.\n Please usethe link below to activate your account \n'+activate_url,
+                    'noreply@letscode.com',
                     [email],
                 )
-                
                 email.send(fail_silently=False)
                 messages.success(request, 'Account successfully created')
                 return render(request, 'authorization/registration.html')
 
         return render(request, "authorization/registration.html")
+
+# Account Verification View
+class VerificationView(View):
+    def get(self, request, uidb64, token):
+        return redirect('login')
