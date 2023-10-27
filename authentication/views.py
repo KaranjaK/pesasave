@@ -91,3 +91,9 @@ class RegistrationView(View):
 class VerificationView(View):
     def get(self, request, uidb64, token):
         return redirect('login')
+
+# User Login View
+class LoginView(View):
+    def get(self, request):
+        return render(request, 'authorization/login.html')
+    
