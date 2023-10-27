@@ -9,7 +9,7 @@
         <h4>Free Account Registration</h4>
       </div>
       <div class="card-body">
-        <form action="" method="post">
+        <form action="{% url 'register' %}" method="post">
           {% csrf_token %}
           {% include 'partials/_messages.html' %}
           <div class="mb-3">

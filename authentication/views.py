@@ -56,11 +56,11 @@ class RegistrationView(View):
                 user.is_active = False
                 user.save()
                 email_subject = 'Account Activation'
-                email_body = f'Hi {username} and welcome to PesaSave.\n Kindly confirm your email to actuvate your account.\n Thanks'
+                email_body = f'Hi {username} and welcome to PesaSave.\n Kindly confirm your email to activate your account.\n Thanks'
                 email = EmailMessage(
                     email_subject,
                     email_body,
-                    "noreply@pesasave.com",
+                    "letscodeit75@gmail.com",
                     [email],
                 )
                 
