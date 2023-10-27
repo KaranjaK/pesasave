@@ -11,6 +11,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode # Use
 from django.contrib.sites.shortcuts import get_current_site #Helps in constructing a domain i.e. a path to our web server
 from .utils import account_activation_token # Imports the Token Generator created in the utils.py file
 from django.urls import reverse # Will help in reverting the user to the system when they click on the activation link
+from django.contrib import auth
 
 # Create your views here.
 class UsernameValidationView(View):
@@ -113,4 +114,28 @@ class VerificationView(View):
 class LoginView(View):
     def get(self, request):
         return render(request, 'authorization/login.html')
+    
+    def post(self, request):
+        username = request.POST['username']
+        password = request.POST['password']
+
+        if username and password:
+            user = auth.authenticate(username=username, password=password)
+
+            if user:
+                if user.is_active:
+                    auth.login(request, user)
+                    messages.success(request, 'Welcome, ' +
+                                     user.username+' you are now logged in')
+                    return redirect('Home')
+                messages.error(
+                    request, 'Account is not active,please check your email')
+                return render(request, 'authentication/login.html')
+            messages.error(
+                request, 'Invalid credentials,try again')
+            return render(request, 'authentication/login.html')
+
+        messages.error(
+            request, 'Please fill all fields')
+        return render(request, 'authentication/login.html')
     
